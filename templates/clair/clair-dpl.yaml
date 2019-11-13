@@ -23,10 +23,6 @@ spec:
 {{ toYaml .Values.clair.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       containers:
       - name: clair
         image: {{ .Values.clair.image.repository }}:{{ .Values.clair.image.tag }}
@@ -65,6 +61,12 @@ spec:
         - name: clair-config
           mountPath: /etc/clair/config.yaml
           subPath: config.yaml
+{{- if .Values.extraContainers }}
+{{ toYaml .Values.extraContainers | indent 6 }}
+{{- end }}
+{{- if .Values.clair.extraContainers }}
+{{ toYaml .Values.clair.extraContainers | indent 6 }}
+{{- end }}
       volumes:
       - name: clair-config
         configMap:
@@ -72,6 +74,12 @@ spec:
           items:
             - key: config.yaml
               path: config.yaml
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
+{{- if .Values.clair.extraVolumes }}
+{{ toYaml .Values.clair.extraVolumes | indent 6 }}
+{{- end }}
     {{- with .Values.clair.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

@@ -20,10 +20,6 @@ spec:
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/notary/notary-cm.yaml") . | sha256sum }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       containers:
       - name: notary-signer
         image: {{ .Values.notary.signer.image.repository }}:{{ .Values.notary.signer.image.tag }}
@@ -53,6 +49,12 @@ spec:
           mountPath: /etc/ssl/notary/cert/notary-signer.key
           subPath: key
         {{- end }}
+{{- if .Values.extraContainers }}
+{{ toYaml .Values.extraContainers | indent 6 }}
+{{- end }}
+{{- if .Values.notary.signer.extraContainers }}
+{{ toYaml .Values.notary.signer.extraContainers | indent 6 }}
+{{- end }}
       volumes:
       - name: notary-config
         configMap:
@@ -62,6 +64,12 @@ spec:
         secret:
           secretName: {{ .Values.notary.secretName }}
       {{- end }}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
+{{- if .Values.notary.signer.extraVolumes }}
+{{ toYaml .Values.notary.signer.extraVolumes | indent 6 }}
+{{- end }}
     {{- with .Values.notary.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

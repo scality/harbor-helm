@@ -24,10 +24,6 @@ spec:
 {{ toYaml .Values.notary.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       containers:
       - name: notary-server
         image: {{ .Values.notary.server.image.repository }}:{{ .Values.notary.server.image.tag }}
@@ -52,6 +48,12 @@ spec:
           mountPath: /etc/ssl/notary/cert/notary-signer-ca.crt
           subPath: ca
         {{- end }}
+{{- if .Values.extraContainers }}
+{{ toYaml .Values.extraContainers | indent 6 }}
+{{- end }}
+{{- if .Values.notary.server.extraContainers }}
+{{ toYaml .Values.notary.server.extraContainers | indent 6 }}
+{{- end }}
       volumes:
       - name: notary-config
         configMap:
@@ -68,6 +70,12 @@ spec:
         secret:
           secretName: {{ .Values.notary.secretName }}
       {{- end }}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
+{{- if .Values.notary.server.extraVolumes }}
+{{ toYaml .Values.notary.server.extraVolumes | indent 6 }}
+{{- end }}
     {{- with .Values.notary.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

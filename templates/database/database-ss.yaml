@@ -25,10 +25,6 @@ spec:
 {{ toYaml .Values.database.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       initContainers:
       - name: "remove-lost-found"
         image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
@@ -64,6 +60,12 @@ spec:
         - name: database-data
           mountPath: /var/lib/postgresql/data
           subPath: {{ $database.subPath }}
+{{- if .Values.extraContainers }}
+{{ toYaml .Values.extraContainers | indent 6 }}
+{{- end }}
+{{- if .Values.database.internal.extraContainers }}
+{{ toYaml .Values.database.internal.extraContainers | indent 6 }}
+{{- end }}
       {{- if not .Values.persistence.enabled }}
       volumes:
       - name: "database-data"
@@ -74,6 +76,12 @@ spec:
         persistentVolumeClaim:
           claimName: {{ $database.existingClaim }}
       {{- end -}}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
+{{- if .Values.database.internal.extraVolumes }}
+{{ toYaml .Values.database.internal.extraVolumes | indent 6 }}
+{{- end }}
     {{- with .Values.database.internal.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

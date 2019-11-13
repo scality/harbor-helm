@@ -21,10 +21,6 @@ spec:
 {{ toYaml .Values.portal.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       containers:
       - name: portal
         image: {{ .Values.portal.image.repository }}:{{ .Values.portal.image.tag }}
@@ -48,6 +44,22 @@ spec:
         ports:
         - containerPort: 80
     {{- with .Values.portal.nodeSelector }}
+
+{{- if .Values.extraContainers }}
+{{ toYaml .Values.extraContainers | indent 6 }}
+{{- end }}
+{{- if .Values.portal.extraContainers }}
+{{ toYaml .Values.portal.extraContainers | indent 6 }}
+{{- end }}
+{{ if or .Values.extraVolumes .Values.portal.extraVolumes }}
+      volumes:
+{{- end }}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
+{{- if .Values.portal.extraVolumes }}
+{{ toYaml .Values.portal.extraVolumes | indent 6 }}
+{{- end }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}

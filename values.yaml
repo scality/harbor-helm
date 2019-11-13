@@ -224,11 +224,6 @@ persistence:
 
 imagePullPolicy: IfNotPresent
 
-# Use this set to assign a list of default pullSecrets
-imagePullSecrets: 
-#  - name: docker-registry-secret
-#  - name: internal-registry-secret
-
 logLevel: debug
 # The initial password of Harbor admin. Change it from portal after launching Harbor
 harborAdminPassword: "Harbor12345"
@@ -239,7 +234,7 @@ secretKey: "not-a-secure-key"
 nginx:
   image:
     repository: goharbor/nginx-photon
-    tag: dev
+    tag: v1.8.0
   replicas: 1
   # resources:
   #  requests:
@@ -250,11 +245,15 @@ nginx:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # List of extra Containers to add to the pod if needed
+  # extraContainers:
+  # List of extra volumes to add to the pod if needed
+  # extraVolumes:
 
 portal:
   image:
     repository: goharbor/harbor-portal
-    tag: dev
+    tag: v1.8.0
   replicas: 1
 # resources:
 #  requests:
@@ -265,11 +264,15 @@ portal:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # List of extra Containers to add to the pod if needed
+  # extraContainers:
+  # List of extra volumes to add to the pod if needed
+  # extraVolumes:
 
 core:
   image:
     repository: goharbor/harbor-core
-    tag: dev
+    tag: v1.8.0
   replicas: 1
 # resources:
 #  requests:
@@ -280,6 +283,10 @@ core:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # List of extra Containers to add to the pod if needed
+  # extraContainers:
+  # List of extra volumes to add to the pod if needed
+  # extraVolumes:
   # Secret is used when core server communicates with other components.
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
@@ -295,7 +302,7 @@ core:
 jobservice:
   image:
     repository: goharbor/harbor-jobservice
-    tag: dev
+    tag: v1.8.0
   replicas: 1
   maxJobWorkers: 10
   # The logger for jobs: "file", "database" or "stdout"
@@ -309,6 +316,10 @@ jobservice:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # List of extra Containers to add to the pod if needed
+  # extraContainers:
+  # List of extra volumes to add to the pod if needed
+  # extraVolumes:
   # Secret is used when job service communicates with other components.
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
@@ -318,8 +329,7 @@ registry:
   registry:
     image:
       repository: goharbor/registry-photon
-      tag: dev
-
+      tag: v2.7.1-patch-2819-v1.8.0
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -327,8 +337,7 @@ registry:
   controller:
     image:
       repository: goharbor/harbor-registryctl
-      tag: dev
-
+      tag: v1.8.0
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -339,6 +348,10 @@ registry:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # List of extra Containers to add to the pod if needed
+  # extraContainers:
+  # List of extra volumes to add to the pod if needed
+  # extraVolumes:
   # Secret is used to secure the upload state from client
   # and registry storage backend.
   # See: https://github.com/docker/distribution/blob/master/docs/configuration.md#http
@@ -350,7 +363,7 @@ chartmuseum:
   enabled: true
   image:
     repository: goharbor/chartmuseum-photon
-    tag: dev
+    tag: v0.8.1-v1.8.0
   replicas: 1
   # resources:
   #  requests:
@@ -361,12 +374,16 @@ chartmuseum:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # List of extra Containers to add to the pod if needed
+  # extraContainers:
+  # List of extra volumes to add to the pod if needed
+  # extraVolumes:
 
 clair:
   enabled: true
   image:
     repository: goharbor/clair-photon
-    tag: dev
+    tag: v2.0.8-v1.8.0
   replicas: 1
   # The http(s) proxy used to update vulnerabilities database from internet
   httpProxy:
@@ -383,27 +400,39 @@ clair:
   affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
+  # List of extra Containers to add to the pod if needed
+  # extraContainers:
+  # List of extra volumes to add to the pod if needed
+  # extraVolumes:
 
 notary:
   enabled: true
   server:
     image:
       repository: goharbor/notary-server-photon
-      tag: dev
+      tag: v0.6.1-v1.8.0
     replicas: 1
     # resources:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+    # List of extra Containers to add to the pod if needed
+    # extraContainers:
+    # List of extra volumes to add to the pod if needed
+    # extraVolumes:
   signer:
     image:
       repository: goharbor/notary-signer-photon
-      tag: dev
+      tag: v0.6.1-v1.8.0
     replicas: 1
     # resources:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+    # List of extra Containers to add to the pod if needed
+    # extraContainers:
+    # List of extra volumes to add to the pod if needed
+    # extraVolumes:
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -424,7 +453,7 @@ database:
   internal:
     image:
       repository: goharbor/harbor-db
-      tag: dev
+      tag: v1.8.0
     # The initial superuser password for internal database
     password: "changeit"
     # resources:
@@ -434,6 +463,10 @@ database:
     nodeSelector: {}
     tolerations: []
     affinity: {}
+    # List of extra Containers to add to the pod if needed
+    # extraContainers:
+    # List of extra volumes to add to the pod if needed
+    # extraVolumes:
   external:
     host: "192.168.0.1"
     port: "5432"
@@ -454,7 +487,7 @@ redis:
   internal:
     image:
       repository: goharbor/redis-photon
-      tag: dev
+      tag: v1.8.0
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -462,6 +495,10 @@ redis:
     nodeSelector: {}
     tolerations: []
     affinity: {}
+    # List of extra Containers to add to the pod if needed
+    # extraContainers:
+    # List of extra volumes to add to the pod if needed
+    # extraVolumes:
   external:
     host: "192.168.0.2"
     port: "6379"
@@ -474,3 +511,15 @@ redis:
     password: ""
   ## Additional deployment annotations
   podAnnotations: {}
+
+# List of extra Containers to add to the pod if needed
+# extraContainers:
+# List of extra volumes to add to the pod if needed
+# extraVolumes:
+
+config:
+  enabled: false
+  configuration: {}
+  image:
+    repository: byrnedo/alpine-curl
+    tag: 0.1.7

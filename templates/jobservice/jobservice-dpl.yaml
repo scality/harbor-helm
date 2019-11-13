@@ -24,10 +24,6 @@ spec:
 {{ toYaml .Values.jobservice.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       containers:
       - name: jobservice
         image: {{ .Values.jobservice.image.repository }}:{{ .Values.jobservice.image.tag }}
@@ -74,6 +70,12 @@ spec:
         - name: job-logs
           mountPath: /var/log/jobs
           subPath: {{ .Values.persistence.persistentVolumeClaim.jobservice.subPath }}
+{{- if .Values.extraContainers }}
+{{ toYaml .Values.extraContainers | indent 6 }}
+{{- end }}
+{{- if .Values.jobservice.extraContainers }}
+{{ toYaml .Values.jobservice.extraContainers | indent 6 }}
+{{- end }}
       volumes:
       - name: jobservice-config
         configMap:
@@ -85,6 +87,12 @@ spec:
         {{- else }}
         emptyDir: {}
         {{- end }}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
+{{- if .Values.jobservice.extraVolumes }}
+{{ toYaml .Values.jobservice.extraVolumes | indent 6 }}
+{{- end }}
     {{- with .Values.jobservice.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

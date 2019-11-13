@@ -25,10 +25,6 @@ spec:
 {{ toYaml .Values.registry.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       containers:
       - name: registry
         image: {{ .Values.registry.registry.image.repository }}:{{ .Values.registry.registry.image.tag }}
@@ -117,6 +113,12 @@ spec:
         - name: registry-config
           mountPath: /etc/registryctl/config.yml
           subPath: ctl-config.yml
+{{- if .Values.extraContainers }}
+{{ toYaml .Values.extraContainers | indent 6 }}
+{{- end }}
+{{- if .Values.registry.extraContainers }}
+{{ toYaml .Values.registry.extraContainers | indent 6 }}
+{{- end }}
       volumes:
       - name: registry-root-certificate
         secret:
@@ -143,6 +145,12 @@ spec:
             - key: GCS_KEY_DATA
               path: gcs-key.json
       {{- end }}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
+{{- if .Values.registry.extraVolumes }}
+{{ toYaml .Values.registry.extraVolumes | indent 6 }}
+{{- end }}
     {{- with .Values.registry.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

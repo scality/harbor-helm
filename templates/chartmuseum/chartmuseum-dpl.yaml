@@ -25,10 +25,6 @@ spec:
 {{ toYaml .Values.chartmuseum.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       containers:
       - name: chartmuseum
         image: {{ .Values.chartmuseum.image.repository }}:{{ .Values.chartmuseum.image.tag }}
@@ -71,6 +67,12 @@ spec:
           mountPath: /etc/chartmuseum/gcs-key.json
           subPath: gcs-key.json
         {{- end }}
+{{- if .Values.extraContainers }}
+{{ toYaml .Values.extraContainers | indent 6 }}
+{{- end }}
+{{- if .Values.chartmuseum.extraContainers }}
+{{ toYaml .Values.chartmuseum.extraContainers | indent 6 }}
+{{- end }}
       volumes:
       - name: chartmuseum-data
       {{- if and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "filesystem") }}
@@ -87,6 +89,12 @@ spec:
             - key: GCS_KEY_DATA
               path: gcs-key.json
       {{- end }}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
+{{- if .Values.chartmuseum.extraVolumes }}
+{{ toYaml .Values.chartmuseum.extraVolumes | indent 6 }}
+{{- end }}
       {{- with .Values.chartmuseum.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

@@ -30,10 +30,6 @@ spec:
 {{ toYaml .Values.nginx.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       containers:
       - name: nginx
         image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
@@ -66,6 +62,12 @@ spec:
         - name: certificate
           mountPath: /etc/nginx/cert
         {{- end }}
+{{- if .Values.extraContainers }}
+{{ toYaml .Values.extraContainers | indent 6 }}
+{{- end }}
+{{- if .Values.nginx.extraContainers }}
+{{ toYaml .Values.nginx.extraContainers | indent 6 }}
+{{- end }}
       volumes:
       - name: config
         configMap:
@@ -79,6 +81,12 @@ spec:
           secretName: {{ template "harbor.nginx" . }}
           {{- end }}
       {{- end }}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
+{{- if .Values.nginx.extraVolumes }}
+{{ toYaml .Values.nginx.extraVolumes | indent 6 }}
+{{- end }}
     {{- with .Values.nginx.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
